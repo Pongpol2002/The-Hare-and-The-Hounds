@@ -19,8 +19,6 @@ def print_game_state(board):
     with X for hounds
     with 0 for hare
     """
-    print('printing the board')
-    print(board)
     cannot_move = [(0, 0), (2, 0), (0, 4), (2, 4)]
     for i in range(board.shape[0]):
         buffer = ''
@@ -188,7 +186,7 @@ def get_next_moves(board, player):
         return (next_moves_hound1, next_moves_hound2, next_moves_hound3)
 
 
-def evaluation(board, player):
+def evaluation(board, role):
     """ calculate the heuristic value for the given board"""
     start = np.array((1, 4))
     goal = np.array((1, 0))
@@ -205,14 +203,8 @@ def evaluation(board, player):
     dist_hare_hound3 = cityblock(hare, hound3)
     dist_hare_goal = cityblock(hare, goal)
     dist_hare_start = cityblock(hare, start)
-    dist_hound1_goal = cityblock(hound1, goal)
-    dist_hound2_goal = cityblock(hound2, goal)
-    dist_hound3_goal = cityblock(hound3, goal)
-    dist_hound1_start = cityblock(hound1, start)
-    dist_hound2_start = cityblock(hound2, start)
-    dist_hound3_start = cityblock(hound3, start)
 
-    if player == 'hare':
+    if role == 'hare':
         score = 0
         """ Check if hare is to the left of the hounds"""
         if (col_hare < col_hound_3 and col_hare < col_hound_2 and col_hare < col_hound_1):
@@ -241,6 +233,8 @@ def evaluation(board, player):
             score = math.pow(10, 5)
         else:
             score = (dist_hare_hound3 + dist_hare_hound2 + dist_hare_hound1) / 3
+            if (1,2) in [(row_hound_1, col_hound_1), (row_hound_2, col_hound_2), (row_hound_3, col_hound_3)]:
+                score += 10
             if col_hare > col_hound_1:  # hare is to right on hound1
                 score += dist_hare_goal - dist_hare_hound1 - 1
             if col_hare > col_hound_2:  # hare is to right on hound2
